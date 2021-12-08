@@ -30,8 +30,7 @@ public class ProductoController {
 
     @Autowired
     private ProductoService pS;
-    
-    
+
     @Autowired
     private UploadFileService upload;
 
@@ -48,47 +47,65 @@ public class ProductoController {
     }
 
     @PostMapping("/save")
-    public String save(Producto producto, @RequestParam("img")MultipartFile file) throws IOException {
+    public String save(Producto producto, @RequestParam("img") MultipartFile file) throws IOException {
         Usuario u = new Usuario(1, "", "", "", "", "", "", "");
         producto.setUsuario(u);
-        
+
         //imagen
-        if (producto.getId()==null) {//cuando se crea un producto
-           String nombreImagen=upload.saveImages(file);
-           producto.setImagen(nombreImagen);
-        }else{
-            if(file.isEmpty()){
-                //modifica y se cargue la misma img, no la cambiamos
-                Producto p=new Producto();
-                p=pS.get(producto.getId()).get();
-                producto.setImagen(p.getImagen());
-            }else{
-                //si quiero cambiar la imagen también
-                String nombreImagen=upload.saveImages(file);
-                producto.setImagen(nombreImagen);
-            }
+        if (producto.getId() == null) {//cuando se crea un producto
+            String nombreImagen = upload.saveImages(file);
+            producto.setImagen(nombreImagen);
         }
-        
+
         pS.save(producto);
         return "redirect:/productos";
     }
+
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable Integer id, ModelMap model) {
-        Producto pr=new Producto();
-        Optional<Producto>respuesta=pS.get(id);
-        pr=respuesta.get();
+        Producto pr = new Producto();
+        Optional<Producto> respuesta = pS.get(id);
+        pr = respuesta.get();
         model.addAttribute("productos", pr);
         return "productos/edit";
     }
+
     @PostMapping("/update")
-    public String update(Producto producto){
+    public String update(Producto producto, @RequestParam("img") MultipartFile file) throws IOException {       
+        Producto p = new Producto();
+            p = pS.get(producto.getId()).get();
+        if (file.isEmpty()) {
+            //modifica y se cargue la misma img, no la cambiamos
+            
+            producto.setImagen(p.getImagen());
+        } else {
+            //Cuando se edita la  imagen tmb           
+            if (!p.getImagen().equals("default.jpg")) {
+                upload.deleteImage(p.getImagen());
+
+            }
+
+            //si quiero cambiar la imagen también
+            String nombreImagen = upload.saveImages(file);
+            producto.setImagen(nombreImagen);
+        }
+        producto.setUsuario(p.getUsuario());
         pS.update(producto);
         return "redirect:/productos";
     }
+
     @GetMapping("/delete/{id}")
-    public String delete(@PathVariable Integer id){
+    public String delete(@PathVariable Integer id) {
+        //eliminamos imagen
+        Producto p = new Producto();
+        p = pS.get(id).get();
+        //eliminamos la imagen cuando no sea la de por defecto
+        if (!p.getImagen().equals("default.jpg")) {
+            upload.deleteImage(p.getImagen());
+
+        }
         pS.delete(id);
         return "redirect:/productos";
     }
-    
+
 }
