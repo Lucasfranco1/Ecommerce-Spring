@@ -8,10 +8,12 @@ package com.ecommerce.controller;
 import com.ecommerce.model.Producto;
 import com.ecommerce.model.Usuario;
 import com.ecommerce.service.ProductoService;
+import java.util.List;
 import java.util.logging.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,7 +25,9 @@ public class ProductoController {
     private ProductoService pS;
     
     @GetMapping("")
-    public String show(){
+    public String show(ModelMap model){
+        List<Producto>todo=pS.findAll();
+        model.addAttribute("productos", todo);
         return "productos/show";
     }
     @GetMapping("/create")
