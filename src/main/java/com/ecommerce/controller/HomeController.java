@@ -5,8 +5,11 @@
  */
 package com.ecommerce.controller;
 
+import com.ecommerce.model.DetalleOrden;
+import com.ecommerce.model.Orden;
 import com.ecommerce.model.Producto;
 import com.ecommerce.service.ProductoService;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,14 +19,20 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/")
 public class HomeController {
     @Autowired
     private ProductoService pS;
-            
-            
+    
+    //Para guardar los detalles de la orden
+    List<DetalleOrden>detalles=new ArrayList<DetalleOrden>();
+    //Guardará los datos de la orden        
+    Orden orden=new Orden();
+    
+    
     @GetMapping("/")
     public String homeUser(ModelMap model){
        
@@ -41,7 +50,17 @@ public class HomeController {
     }
     
     @PostMapping("/cart")
-    public String addCart(){
+    public String addCart(@RequestParam Integer id, @RequestParam Integer cantidad){
+        DetalleOrden detalleOrden=new DetalleOrden();
+        Producto producto=new Producto();
+        double sumaTotal=0;
+        
+        Optional<Producto>respuesta=pS.get(id);
+        System.out.println("Producto:"+pS.get(id));
+        System.out.println("Producto:"+ cantidad);
+        producto=respuesta.get();
+        
+        
         return "usuario/carrito";
     }
 }
