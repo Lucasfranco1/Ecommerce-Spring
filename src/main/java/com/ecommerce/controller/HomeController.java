@@ -5,8 +5,10 @@
  */
 package com.ecommerce.controller;
 
+import com.ecommerce.model.Producto;
 import com.ecommerce.service.ProductoService;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -29,8 +31,11 @@ public class HomeController {
     }
     
     @GetMapping("productohome/{id}")
-    public String productoHome(@PathVariable Integer id){
-        
+    public String productoHome(@PathVariable Integer id, ModelMap model){
+        Producto p=new Producto();
+        Optional<Producto>respuesta=pS.get(id);
+        p=respuesta.get();
+        model.addAttribute("productos", p);
       return "usuario/productoHome";  
     }
 }
