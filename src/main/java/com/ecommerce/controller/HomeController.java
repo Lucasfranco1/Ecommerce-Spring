@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -163,6 +164,17 @@ public class HomeController {
         detalles.clear();                        
         
         return "redirect:/";
+    }
+    
+    @PostMapping("/search")
+    public String searchProduct(@RequestParam String nombre, ModelMap model){
+        System.out.println("Nombre del producto: "+ nombre);
+        
+        //una función lambda, filtrará el producto... Y lo convertirá en una lista...
+        List<Producto>productos=pS.findAll().stream().filter(p -> p.getNombre().contains(nombre)).collect(Collectors.toList());
+        model.addAttribute("productos", productos);
+        
+        return "usuario/home";
     }
     
 }
