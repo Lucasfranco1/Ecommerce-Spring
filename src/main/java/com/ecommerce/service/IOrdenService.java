@@ -16,4 +16,6 @@ public interface IOrdenService {
      public Orden save(Orden orden);
      
      public List<Orden>findAll();
+     
+     public String generarNumeroOrden();
 }
