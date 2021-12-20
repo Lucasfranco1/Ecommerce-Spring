@@ -18,5 +18,10 @@ private UsuarioRepository uR;
     public Optional<Usuario> findById(Integer id) {
         return uR.findById(id);
     }
+
+    @Override
+    public Usuario save(Usuario usuario) {
+       return uR.save(usuario);
+    }
     
 }
