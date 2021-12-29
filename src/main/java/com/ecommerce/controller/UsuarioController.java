@@ -7,6 +7,7 @@ package com.ecommerce.controller;
 
 import com.ecommerce.model.Usuario;
 import com.ecommerce.service.IUsuarioService;
+import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,4 +33,10 @@ public class UsuarioController {
         uS.save(usuario);
         return "redirect:/";
     }
+    
+    @GetMapping("/login")
+    public String login(){
+        return "usuario/login";
+    }
+    
 }
